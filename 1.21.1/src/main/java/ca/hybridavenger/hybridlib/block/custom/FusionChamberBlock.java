@@ -1,8 +1,9 @@
 package ca.hybridavenger.hybridlib.block.custom;
 
+import ca.hybridavenger.hybridlib.block.entity.ModBlockEntities;
+import ca.hybridavenger.hybridlib.block.entity.custom.FusionChamberBlockEntity;
 import com.mojang.serialization.MapCodec;
-import net.kaupenjoe.tutorialmod.block.entity.ModBlockEntities;
-import net.kaupenjoe.tutorialmod.block.entity.custom.GrowthChamberBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,7 +37,7 @@ public class FusionChamberBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new GrowthChamberBlockEntity(pPos, pState);
+        return new FusionChamberBlockEntity(pPos, pState);
     }
 
     @Override
@@ -48,8 +49,8 @@ public class FusionChamberBlock extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof GrowthChamberBlockEntity growthChamberBlockEntity) {
-                growthChamberBlockEntity.drops();
+            if (blockEntity instanceof FusionChamberBlockEntity fusionChamberBlockEntity) {
+                fusionChamberBlockEntity.drops();
             }
         }
 
@@ -61,8 +62,8 @@ public class FusionChamberBlock extends BaseEntityBlock {
                                               Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof GrowthChamberBlockEntity growthChamberBlockEntity) {
-                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(growthChamberBlockEntity, Component.literal("Growth Chamber")), pPos);
+            if(entity instanceof FusionChamberBlockEntity fusionChamberBlockEntity) {
+                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(fusionChamberBlockEntity, Component.literal("Fusion Chamber")), pPos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -78,7 +79,7 @@ public class FusionChamberBlock extends BaseEntityBlock {
             return null;
         }
 
-        return createTickerHelper(pBlockEntityType, ModBlockEntities.GROWTH_CHAMBER_BE.get(),
-                (level, blockPos, blockState, growthChamberBlockEntity) -> growthChamberBlockEntity.tick(level, blockPos, blockState));
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.FUSION_CHAMBER_BE.get(),
+                (level, blockPos, blockState, fusionChamberBlockEntity) -> fusionChamberBlockEntity.tick(level, blockPos, blockState));
     }
 }

@@ -59,7 +59,7 @@ public class BlockRegistry {
                     .strength(5f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
     //Machines
-    public static final RegistryObject<Block> FUSION_CHAMBER = registerBlock("growth_chamber",
+    public static final RegistryObject<Block> FUSION_CHAMBER = registerBlock("fusion_chamber",
             () -> new FusionChamberBlock(BlockBehaviour.Properties.of()));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {

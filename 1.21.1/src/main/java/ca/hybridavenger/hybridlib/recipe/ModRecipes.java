@@ -21,7 +21,7 @@ public class ModRecipes {
             TYPES.register("fusion_chamber", () -> new RecipeType<FusionChamberRecipe>() {
                 @Override
                 public String toString() {
-                    return "growth_chamber";
+                    return "fusion_chamber";
                 }
             });
 

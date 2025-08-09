@@ -16,7 +16,7 @@ public class ModBlockEntities {
 
 
     public static final RegistryObject<BlockEntityType<FusionChamberBlockEntity>> FUSION_CHAMBER_BE =
-            BLOCK_ENTITIES.register("growth_chamber_be", () -> BlockEntityType.Builder.of(
+            BLOCK_ENTITIES.register("fusion_chamber_be", () -> BlockEntityType.Builder.of(
                     FusionChamberBlockEntity::new, BlockRegistry.FUSION_CHAMBER.get()).build(null));
 
 

@@ -10,31 +10,33 @@ import ca.hybridavenger.hybridlib.screen.custom.FusionChamberMenu;
 import ca.hybridavenger.hybridlib.util.ModCreativeTabs;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
-
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.slf4j.Logger;
+
+import java.util.logging.Logger;
 
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(HybridLib.MOD_ID)
 public class HybridLib {
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "hybridlib";
     // Directly reference a slf4j logger
-    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = (Logger) LogUtils.getLogger();
 
     public HybridLib() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -43,27 +45,39 @@ public class HybridLib {
         MinecraftForge.EVENT_BUS.register(this);
 
         ModCreativeTabs.register(modEventBus);
-        ModMenuTypes.register(modEventBus);
-
-
 
         ItemRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
-        ModRecipes.register(modEventBus);
+
+
+
         ModBlockEntities.register(modEventBus);
 
-        // Register the item to a creative tab
+        ModMenuTypes.register(modEventBus);
+        ModRecipes.register(modEventBus);
 
+        // Register the item to a creative tab
+        modEventBus.addListener(this::addCreative);
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)  {
+        event.enqueueWork(() -> {
 
+        });
     }
 
     // Add the example block item to the building blocks tab
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
 
+        }
+
+        if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+
+        }
+    }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
@@ -77,17 +91,17 @@ public class HybridLib {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
+          //  MenuScreens.register(ModMenuTypes.FUSION_CHAMBER_MENU.get(), FusionChamberMenu::new);
+        }
 
-
-            MenuScreens.register(ModMenuTypes.FUSION_CHAMBER_MENU.get(), FusionChamberMenu::new);
-
-
-
-
+        @SubscribeEvent
+        public static void registerParticleProvider(RegisterParticleProvidersEvent event) {
 
         }
 
+        @SubscribeEvent
+        public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
 
+        }
     }
-
-    }
+}
