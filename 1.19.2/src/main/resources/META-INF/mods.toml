@@ -19,7 +19,7 @@ modId="hybridlib" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 # ${file.jarVersion} will substitute the value of the Implementation-Version as read from the mod's JAR file metadata
 # see the associated build.gradle script for how to populate this completely automatically during a build
-version="1.1.1-1.19.2" #mandatory
+version="1.1.8Fix-1.19.2" #mandatory
 # A display name for the mod
 displayName="Hybrid Library Mod" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
@@ -31,9 +31,9 @@ logoFile="examplemod.png" #optional
 # A text field displayed in the mod UI
 credits="" #optional
 # A text field displayed in the mod UI
-authors="HybridAvener69" #optional
+authors="HybridAvener" #optional
 # The description text for the mod (multi line!) (#mandatory)
-description='''A Library Mod for MassTech Angel Ring And MassTech: The Mod
+description='''A Library Mod for MassTech Mods
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.hybridlib]] #optional

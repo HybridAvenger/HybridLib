@@ -40,9 +40,16 @@ public class BlockRegistry {
             () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
                     .strength(4.5f).requiresCorrectToolForDrops()), MtGroup.MT_GROUP);
 
+
+
     public static final RegistryObject<Block> COMPRESSED_OBSIDIAN = registerBlock("compressed_obsidian",
             () -> new Block(BlockBehaviour.Properties.of(Material.HEAVY_METAL)
                     .strength(18.5f, 1200f).requiresCorrectToolForDrops()), MtGroup.MT_GROUP);
+
+    public static final RegistryObject<Block> AETHERIUM_ORE = registerBlock("aetherium_ore",
+            () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(5.5f).requiresCorrectToolForDrops()), MtGroup.MT_GROUP);
+
 
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {

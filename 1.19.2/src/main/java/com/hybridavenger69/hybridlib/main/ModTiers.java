@@ -81,6 +81,16 @@ public class ModTiers {
                 Tags.Blocks.NEEDS_GOLD_TOOL,
                 () -> Ingredient.of(ItemRegistry.NETHER_INGOT.get()));
 
+
+        public static final Tier AETHERIUM = new ForgeTier(
+                5,
+                7500,
+                11.0f,
+                6,
+                7500,
+                Tags.Blocks.NEEDS_GOLD_TOOL,
+                () -> Ingredient.of(ItemRegistry.AETHERIUM_GEM.get()));
+
         public static final Tier ICARUS2 = new ForgeTier(
                 4,
                 25000,
@@ -175,9 +185,11 @@ public class ModTiers {
                 5000,
                 9.0f,
                 5,
-                2800,
+                6000,
                 Tags.Blocks.NEEDS_GOLD_TOOL,
                 () -> Ingredient.of(Items.NETHERITE_INGOT));
+
+
 
 
 

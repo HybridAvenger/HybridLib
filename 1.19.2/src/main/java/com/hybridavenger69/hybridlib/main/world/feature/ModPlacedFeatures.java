@@ -22,7 +22,11 @@ public class ModPlacedFeatures {
                             HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(-40), VerticalAnchor.aboveBottom(70)))));
 
 
+   //END
 
+    public static final RegistryObject<PlacedFeature> END_AETHERIUM_ORE_PLACED = PLACED_FEATURES.register("end_aetherium_ore_placed",
+            () -> new PlacedFeature(ModConfiguredFeatures.END_AETHERIUM_ORE.getHolder().get(), commonOrePlacement(2, // VeinsPerChunk
+                    HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(-80), VerticalAnchor.aboveBottom(80)))));
 
 
 

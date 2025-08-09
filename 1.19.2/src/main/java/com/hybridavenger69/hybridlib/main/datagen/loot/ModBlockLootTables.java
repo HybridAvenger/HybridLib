@@ -17,6 +17,9 @@ public class ModBlockLootTables extends BlockLoot {
 
         this.add(BlockRegistry.TECH_ORE.get(),
                 (block) -> createOreDrop(BlockRegistry.TECH_ORE.get(), ItemRegistry.RAW_TECH.get()));
+
+        this.add(BlockRegistry.AETHERIUM_ORE.get(),
+                (block) -> createOreDrop(BlockRegistry.AETHERIUM_ORE.get(), ItemRegistry.AETHERIUM_GEM.get()));
     }
 
     @Override

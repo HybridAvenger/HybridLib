@@ -3,6 +3,9 @@
   "entries": [
     "hybridlib:deepslate_tech_ore",
     "hybridlib:tech_ore",
-    "hybridlib:compressed_obsidian"
+    "hybridlib:compressed_obsidian",
+    "hybridlib:deepslate_euclase_ore",
+    "hybridlib:euclase_ore",
+    "hybridlib:aetherium_ore"
   ]
 }

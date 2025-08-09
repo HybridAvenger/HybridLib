@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_euclase_gem": {
+      "conditions": {
+        "items": [
+          {
+            "items": "hybridlib:euclase_gem"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "hybridlib:euclase_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_euclase_gem"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "hybridlib:euclase_block"
+    ]
+  }
+}

@@ -4,11 +4,11 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-version = '1.1.1-1.19.2'
+version = '1.1.8Fix-1.19.2'
 group = 'com.hybridavenger69.hybridlib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'HybridLib'
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
@@ -96,7 +96,8 @@ repositories {
 
 dependencies {
 
-    minecraft 'net.minecraftforge:forge:1.19.2-43.3.5'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.5.0'
+
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

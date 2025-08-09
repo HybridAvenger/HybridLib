@@ -1,0 +1,11 @@
+{
+  "type": "hybridlib:fusion_chamber",
+  "input": {
+    "item": "minecraft:iron_ingot"
+  },
+  "inputCount": 4,
+  "output": {
+    "item": "minecraft:diamond",
+    "count": 1
+  }
+}

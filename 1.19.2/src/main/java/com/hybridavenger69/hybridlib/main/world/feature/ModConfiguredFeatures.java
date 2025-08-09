@@ -6,9 +6,11 @@ import com.hybridavenger69.hybridlib.HybridLib;
 import com.hybridavenger69.hybridlib.main.BlockRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -26,8 +28,21 @@ public class ModConfiguredFeatures {
             OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, BlockRegistry.DEEPSLATE_TECH_ORE.get().defaultBlockState())));
 
 
+
+    public static final Supplier<List<OreConfiguration.TargetBlockState>> END_AETHERIUM_ORES = Suppliers.memoize(() -> List.of(
+            OreConfiguration.target(new BlockMatchTest(Blocks.END_STONE), BlockRegistry.AETHERIUM_ORE.get().defaultBlockState())));
+
+
+
+    //END ORe
+    public static final RegistryObject<ConfiguredFeature<?, ?>> END_AETHERIUM_ORE = CONFIGURED_FEATURES.register("end_aetherium_ore",
+            () -> new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(END_AETHERIUM_ORES.get(), 9)));
+
+
     public static final RegistryObject<ConfiguredFeature<?, ?>> TECH_ORE = CONFIGURED_FEATURES.register("tech_ore",
             () -> new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(OVERWORLD_TECH_ORES.get(), 7)));
+
+
 
 
     public static void register(IEventBus eventBus) {
