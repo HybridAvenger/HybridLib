@@ -7,6 +7,7 @@ import ca.hybridavenger.hybridlib.item.ItemRegistry;
 import ca.hybridavenger.hybridlib.recipe.ModRecipes;
 import ca.hybridavenger.hybridlib.screen.ModMenuTypes;
 import ca.hybridavenger.hybridlib.screen.custom.FusionChamberMenu;
+import ca.hybridavenger.hybridlib.screen.custom.FusionChamberScreen;
 import ca.hybridavenger.hybridlib.util.ModCreativeTabs;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -26,8 +27,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import java.util.logging.Logger;
-
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -36,7 +35,7 @@ public class HybridLib {
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "hybridlib";
     // Directly reference a slf4j logger
-    public static final Logger LOGGER = (Logger) LogUtils.getLogger();
+
 
     public HybridLib() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -91,7 +90,7 @@ public class HybridLib {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
-          //  MenuScreens.register(ModMenuTypes.FUSION_CHAMBER_MENU.get(), FusionChamberMenu::new);
+              MenuScreens.register(ModMenuTypes.FUSION_CHAMBER_MENU.get(), FusionChamberScreen::new);
         }
 
         @SubscribeEvent

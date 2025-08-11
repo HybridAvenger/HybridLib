@@ -1,6 +1,7 @@
 package ca.hybridavenger.hybridlib.util;
 
 import ca.hybridavenger.hybridlib.HybridLib;
+import ca.hybridavenger.hybridlib.block.BlockRegistry;
 import ca.hybridavenger.hybridlib.item.ItemRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -20,23 +21,23 @@ public class ModCreativeTabs {
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ItemRegistry.NETHER_INGOT.get()))
                     .title(Component.translatable("creativetab.hybridlib.hybridtab"))
                     .displayItems((itemDisplayParameters, output) -> {
-                        //output.accept(ItemRegistry.RAW_TECH);
-                        //output.accept(ItemRegistry.NETHER_INGOT);
-                        //output.accept(ItemRegistry.EUCLASE_GEM);
-                        //output.accept(ItemRegistry.TECH_INGOT);
-                        //output.accept(ItemRegistry.DOUBLE_NETHERITE_INGOT);
-                        //output.accept(ItemRegistry.AETHERIUM_GEM);
-                        //output.accept(ItemRegistry.AETHERIUM_GEM_FRAGMENT);
+                        output.accept(ItemRegistry.RAW_TECH.get());
+                        output.accept(ItemRegistry.NETHER_INGOT.get());
+                        output.accept(ItemRegistry.EUCLASE_GEM.get());
+                        output.accept(ItemRegistry.TECH_INGOT.get());
+                        output.accept(ItemRegistry.DOUBLE_NETHERITE_INGOT.get());
+                        output.accept(ItemRegistry.AETHERIUM_GEM.get());
+                        output.accept(ItemRegistry.AETHERIUM_GEM_FRAGMENT.get());
 
-                        //output.accept(BlockRegistry.AETHERIUM_ORE);
-                        //output.accept(BlockRegistry.TECH_ORE);
-                        //output.accept(BlockRegistry.TECH_BLOCK);
-                        //output.accept(BlockRegistry.EUCLASE_BLOCK);
-                        //output.accept(BlockRegistry.EUCLASE_ORE);
-                        //output.accept(BlockRegistry.DEEPSLATE_EUCLASE_ORE);
-                        //output.accept(BlockRegistry.DEEPSLATE_TECH_ORE);
-                        //output.accept(BlockRegistry.COMPRESSED_OBSIDIAN);
-                        //output.accept(BlockRegistry.FUSION_CHAMBER);
+                        output.accept(BlockRegistry.AETHERIUM_ORE.get());
+                        output.accept(BlockRegistry.TECH_ORE.get());
+                        output.accept(BlockRegistry.TECH_BLOCK.get());
+                        output.accept(BlockRegistry.EUCLASE_BLOCK.get());
+                        output.accept(BlockRegistry.EUCLASE_ORE.get());
+                        output.accept(BlockRegistry.DEEPSLATE_EUCLASE_ORE.get());
+                        output.accept(BlockRegistry.DEEPSLATE_TECH_ORE.get());
+                        output.accept(BlockRegistry.COMPRESSED_OBSIDIAN.get());
+                        output.accept(BlockRegistry.FUSION_CHAMBER.get());
 
 
 

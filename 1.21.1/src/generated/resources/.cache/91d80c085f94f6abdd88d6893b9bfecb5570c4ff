@@ -1,4 +1,4 @@
-// 1.21.1	2025-08-05T15:19:57.2211641	Tags for minecraft:block mod id hybridlib
-3635e2ecdb233c4de498b60372a40757844ece66 data/minecraft/tags/block/mineable/pickaxe.json
+// 1.21.1	2025-08-08T23:28:13.1422432	Tags for minecraft:block mod id hybridlib
+b1892f54eba0d54280a5aee9810f8adc0053235e data/minecraft/tags/block/mineable/pickaxe.json
 dcd1be9c55d521d7762592918bb1e9f8bb8202b3 data/minecraft/tags/block/needs_diamond_tool.json
 9d4bba55763601413c26056d82be8d22d1204a8b data/minecraft/tags/block/needs_iron_tool.json

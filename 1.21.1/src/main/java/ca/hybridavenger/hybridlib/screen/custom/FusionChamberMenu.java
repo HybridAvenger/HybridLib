@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jetbrains.annotations.Nullable;
+
 
 public class FusionChamberMenu extends AbstractContainerMenu {
     public final FusionChamberBlockEntity blockEntity;
@@ -38,7 +38,7 @@ public class FusionChamberMenu extends AbstractContainerMenu {
 
         addDataSlots(data);
     }
-    
+
 
 
 
