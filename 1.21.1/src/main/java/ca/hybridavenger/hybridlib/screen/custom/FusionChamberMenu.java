@@ -5,7 +5,6 @@ import ca.hybridavenger.hybridlib.block.entity.custom.FusionChamberBlockEntity;
 import ca.hybridavenger.hybridlib.screen.ModMenuTypes;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -21,11 +20,15 @@ public class FusionChamberMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public FusionChamberMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(6));
     }
 
     public FusionChamberMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
         super(ModMenuTypes.FUSION_CHAMBER_MENU.get(), pContainerId);
+
+        // Ensure we always have 6 data slots
+        checkContainerDataCount(data, 6);
+
         this.blockEntity = ((FusionChamberBlockEntity) entity);
         this.level = inv.player.level();
         this.data = data;
@@ -39,9 +42,6 @@ public class FusionChamberMenu extends AbstractContainerMenu {
         addDataSlots(data);
     }
 
-
-
-
     public boolean isCrafting() {
         return data.get(0) > 0;
     }
@@ -52,6 +52,26 @@ public class FusionChamberMenu extends AbstractContainerMenu {
         int arrowPixelSize = 24;
 
         return maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0;
+    }
+
+    // Energy related methods
+    public int getEnergyStored() {
+        int lower = this.data.get(2) & 0xFFFF;
+        int upper = this.data.get(3) & 0xFFFF;
+        return (upper << 16) | lower;
+    }
+
+    public int getMaxEnergy() {
+        int lower = this.data.get(4) & 0xFFFF;
+        int upper = this.data.get(5) & 0xFFFF;
+        return (upper << 16) | lower;
+    }
+
+    public int getScaledEnergy(int pixels) {
+        int energy = getEnergyStored();
+        int maxEnergy = getMaxEnergy();
+
+        return maxEnergy != 0 ? (energy * pixels) / maxEnergy : 0;
     }
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons

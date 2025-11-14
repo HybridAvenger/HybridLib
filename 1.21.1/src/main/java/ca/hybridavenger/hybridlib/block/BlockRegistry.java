@@ -62,6 +62,9 @@ public class BlockRegistry {
     public static final RegistryObject<Block> FUSION_CHAMBER = registerBlock("fusion_chamber",
             () -> new FusionChamberBlock(BlockBehaviour.Properties.of()));
 
+    
+
+
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);

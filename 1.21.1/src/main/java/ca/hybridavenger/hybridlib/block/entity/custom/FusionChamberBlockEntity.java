@@ -7,6 +7,7 @@ import ca.hybridavenger.hybridlib.recipe.ModRecipes;
 import ca.hybridavenger.hybridlib.screen.custom.FusionChamberMenu;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -25,9 +26,13 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -48,6 +53,20 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
+    // Energy Storage
+    private final FusionChamberEnergyStorage energyStorage = new FusionChamberEnergyStorage(100000, 1000) {
+        @Override
+        public void onEnergyChanged() {
+            setChanged();
+            if(level != null && !level.isClientSide()) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+        }
+    };
+    private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
+
+    private static final int ENERGY_PER_TICK = 50; // Energy consumed per tick while crafting
+
     protected final ContainerData data;
     private int progress = 0;
     private int maxProgress = 72;
@@ -60,6 +79,10 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
                 return switch (i) {
                     case 0 -> FusionChamberBlockEntity.this.progress;
                     case 1 -> FusionChamberBlockEntity.this.maxProgress;
+                    case 2 -> FusionChamberBlockEntity.this.energyStorage.getEnergyStored() & 0xFFFF; // Lower 16 bits
+                    case 3 -> (FusionChamberBlockEntity.this.energyStorage.getEnergyStored() >> 16) & 0xFFFF; // Upper 16 bits
+                    case 4 -> FusionChamberBlockEntity.this.energyStorage.getMaxEnergyStored() & 0xFFFF; // Lower 16 bits
+                    case 5 -> (FusionChamberBlockEntity.this.energyStorage.getMaxEnergyStored() >> 16) & 0xFFFF; // Upper 16 bits
                     default -> 0;
                 };
             }
@@ -67,14 +90,20 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
             @Override
             public void set(int i, int value) {
                 switch (i) {
-                    case 0: FusionChamberBlockEntity.this.progress = value;
-                    case 1: FusionChamberBlockEntity.this.maxProgress = value;
+                    case 0: FusionChamberBlockEntity.this.progress = value; break;
+                    case 1: FusionChamberBlockEntity.this.maxProgress = value; break;
+                    case 2: FusionChamberBlockEntity.this.energyStorage.setEnergy(
+                            (FusionChamberBlockEntity.this.energyStorage.getEnergyStored() & 0xFFFF0000) | (value & 0xFFFF)); break;
+                    case 3: FusionChamberBlockEntity.this.energyStorage.setEnergy(
+                            (FusionChamberBlockEntity.this.energyStorage.getEnergyStored() & 0x0000FFFF) | ((value & 0xFFFF) << 16)); break;
+                    case 4: break; // Max energy lower bits - read-only
+                    case 5: break; // Max energy upper bits - read-only
                 }
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return 6; // Increased to include split energy data
             }
         };
     }
@@ -83,12 +112,25 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
     public void onLoad() {
         super.onLoad();
         lazyItemHandler = LazyOptional.of(() -> itemHandler);
+        lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
         lazyItemHandler.invalidate();
+        lazyEnergyHandler.invalidate();
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if(cap == ForgeCapabilities.ITEM_HANDLER) {
+            return lazyItemHandler.cast();
+        }
+        if(cap == ForgeCapabilities.ENERGY) {
+            return lazyEnergyHandler.cast();
+        }
+        return super.getCapability(cap, side);
     }
 
     public void drops() {
@@ -105,6 +147,7 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
         pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
         pTag.putInt("fusion_chamber.progress", progress);
         pTag.putInt("fusion_chamber.max_progress", maxProgress);
+        pTag.putInt("fusion_chamber.energy", energyStorage.getEnergyStored());
 
         super.saveAdditional(pTag, pRegistries);
     }
@@ -116,6 +159,7 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
         itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         progress = pTag.getInt("fusion_chamber.progress");
         maxProgress = pTag.getInt("fusion_chamber.max_progress");
+        energyStorage.setEnergy(pTag.getInt("fusion_chamber.energy"));
     }
 
     @Override
@@ -130,8 +174,9 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
     }
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-        if(hasRecipe()) {
+        if(hasRecipe() && hasEnoughEnergy()) {
             increaseCraftingProgress();
+            energyStorage.extractEnergy(ENERGY_PER_TICK, false);
             setChanged(level, blockPos, blockState);
 
             if (hasCraftingFinished()) {
@@ -143,6 +188,10 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
         }
     }
 
+    private boolean hasEnoughEnergy() {
+        return energyStorage.getEnergyStored() >= ENERGY_PER_TICK;
+    }
+
     private void resetProgress() {
         this.progress = 0;
         this.maxProgress = 72;
@@ -150,9 +199,11 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
 
     private void craftItem() {
         Optional<RecipeHolder<FusionChamberRecipe>> recipe = getCurrentRecipe();
-        ItemStack output = recipe.get().value().output();
+        FusionChamberRecipe recipeValue = recipe.get().value();
+        ItemStack output = recipeValue.output();
+        int inputCount = recipeValue.inputCount();
 
-        itemHandler.extractItem(INPUT_SLOT, 4, false);
+        itemHandler.extractItem(INPUT_SLOT, inputCount, false);
         itemHandler.setStackInSlot(OUTPUT_SLOT, new ItemStack(output.getItem(),
                 itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() + output.getCount()));
     }
@@ -200,5 +251,67 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    // Energy Storage Implementation
+    private static class FusionChamberEnergyStorage implements IEnergyStorage {
+        private int energy;
+        private final int capacity;
+        private final int maxReceive;
+
+        public FusionChamberEnergyStorage(int capacity, int maxReceive) {
+            this.capacity = capacity;
+            this.maxReceive = maxReceive;
+            this.energy = 0;
+        }
+
+        @Override
+        public int receiveEnergy(int maxReceive, boolean simulate) {
+            int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+            if (!simulate) {
+                energy += energyReceived;
+                onEnergyChanged();
+            }
+            return energyReceived;
+        }
+
+        @Override
+        public int extractEnergy(int maxExtract, boolean simulate) {
+            int energyExtracted = Math.min(energy, maxExtract);
+            if (!simulate) {
+                energy -= energyExtracted;
+                onEnergyChanged();
+            }
+            return energyExtracted;
+        }
+
+        @Override
+        public int getEnergyStored() {
+            return energy;
+        }
+
+        @Override
+        public int getMaxEnergyStored() {
+            return capacity;
+        }
+
+        @Override
+        public boolean canExtract() {
+            return false; // Block doesn't output energy
+        }
+
+        @Override
+        public boolean canReceive() {
+            return true;
+        }
+
+        public void setEnergy(int energy) {
+            this.energy = Math.max(0, Math.min(capacity, energy));
+            onEnergyChanged();
+        }
+
+        public void onEnergyChanged() {
+            // Override this to notify block entity of changes
+        }
     }
 }

@@ -32,7 +32,7 @@ public class FrenchLanguageProvider extends LanguageProvider {
         add(BlockRegistry.TECH_ORE.get(), "Minerai technologique");
         add(BlockRegistry.EUCLASE_ORE.get(), "Minerai d'euclase");
         add(BlockRegistry.EUCLASE_BLOCK.get(), "Bloc d'Euclase");
-        //add(BlockRegistry.FUSION_CHAMBER.get(), "Chambre de fusion");
+        add(BlockRegistry.FUSION_CHAMBER.get(), "Chambre de fusion");
 
         add("creativetab.hybridlib.hybridtab", "Mod de bibliothèque hybride");
 

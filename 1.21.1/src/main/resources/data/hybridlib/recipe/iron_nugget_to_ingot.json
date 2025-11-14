@@ -1,0 +1,11 @@
+{
+  "type": "hybridlib:fusion_chamber",
+  "ingredient": {
+    "item": "minecraft:iron_nugget"
+  },
+  "count": 9,
+  "result": {
+    "id": "minecraft:iron_ingot",
+    "count": 1
+  }
+}

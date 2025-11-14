@@ -33,7 +33,8 @@ public class EnglishLanguageProvider extends LanguageProvider
         add(BlockRegistry.TECH_ORE.get(), "Tech Ore");
         add(BlockRegistry.EUCLASE_ORE.get(), "Euclase Ore");
         add(BlockRegistry.EUCLASE_BLOCK.get(), "Block of Euclase");
-        //add(BlockRegistry.FUSION_CHAMBER.get(), "Fusion Chamber");
+        add(BlockRegistry.FUSION_CHAMBER.get(), "Fusion Chamber");
+        add(BlockRegistry.FUSION_CHAMBER_POWER.get(), "Fusion Chamber(Power)");
 
 
         add("creativetab.hybridlib.hybridtab", "Hybrid Library Mod");
