@@ -65,7 +65,7 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
     };
     private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
 
-    private static final int ENERGY_PER_TICK = 50; // Energy consumed per tick while crafting
+    private int currentRecipeEnergy = 100; // Energy per tick for current recipe
 
     protected final ContainerData data;
     private int progress = 0;
@@ -148,6 +148,7 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
         pTag.putInt("fusion_chamber.progress", progress);
         pTag.putInt("fusion_chamber.max_progress", maxProgress);
         pTag.putInt("fusion_chamber.energy", energyStorage.getEnergyStored());
+        pTag.putInt("fusion_chamber.current_recipe_energy", currentRecipeEnergy);
 
         super.saveAdditional(pTag, pRegistries);
     }
@@ -160,6 +161,7 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
         progress = pTag.getInt("fusion_chamber.progress");
         maxProgress = pTag.getInt("fusion_chamber.max_progress");
         energyStorage.setEnergy(pTag.getInt("fusion_chamber.energy"));
+        currentRecipeEnergy = pTag.getInt("fusion_chamber.current_recipe_energy");
     }
 
     @Override
@@ -174,14 +176,23 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
     }
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-        if(hasRecipe() && hasEnoughEnergy()) {
-            increaseCraftingProgress();
-            energyStorage.extractEnergy(ENERGY_PER_TICK, false);
-            setChanged(level, blockPos, blockState);
+        if(hasRecipe()) {
+            // Update energy cost based on current recipe
+            Optional<RecipeHolder<FusionChamberRecipe>> recipe = getCurrentRecipe();
+            if(recipe.isPresent()) {
+                int totalEnergy = recipe.get().value().energyCost();
+                currentRecipeEnergy = Math.max(1, totalEnergy / maxProgress); // Energy per tick
+            }
 
-            if (hasCraftingFinished()) {
-                craftItem();
-                resetProgress();
+            if(hasEnoughEnergy()) {
+                increaseCraftingProgress();
+                energyStorage.extractEnergy(currentRecipeEnergy, false);
+                setChanged(level, blockPos, blockState);
+
+                if (hasCraftingFinished()) {
+                    craftItem();
+                    resetProgress();
+                }
             }
         } else {
             resetProgress();
@@ -189,7 +200,7 @@ public class FusionChamberBlockEntity extends BlockEntity implements MenuProvide
     }
 
     private boolean hasEnoughEnergy() {
-        return energyStorage.getEnergyStored() >= ENERGY_PER_TICK;
+        return energyStorage.getEnergyStored() >= currentRecipeEnergy;
     }
 
     private void resetProgress() {

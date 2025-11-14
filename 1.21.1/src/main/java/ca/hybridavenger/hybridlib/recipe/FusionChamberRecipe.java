@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-public record FusionChamberRecipe(Ingredient inputItem, int inputCount, ItemStack output) implements Recipe<FusionChamberRecipeInput> {
+public record FusionChamberRecipe(Ingredient inputItem, int inputCount, int energyCost, ItemStack output) implements Recipe<FusionChamberRecipeInput> {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> list = NonNullList.create();
@@ -63,6 +63,7 @@ public record FusionChamberRecipe(Ingredient inputItem, int inputCount, ItemStac
         public static final MapCodec<FusionChamberRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
                 Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(FusionChamberRecipe::inputItem),
                 Codec.INT.optionalFieldOf("count", 1).forGetter(FusionChamberRecipe::inputCount),
+                Codec.INT.optionalFieldOf("energy", 7200).forGetter(FusionChamberRecipe::energyCost),
                 ItemStack.CODEC.fieldOf("result").forGetter(FusionChamberRecipe::output)
         ).apply(inst, FusionChamberRecipe::new));
 
@@ -70,6 +71,7 @@ public record FusionChamberRecipe(Ingredient inputItem, int inputCount, ItemStac
                 StreamCodec.composite(
                         Ingredient.CONTENTS_STREAM_CODEC, FusionChamberRecipe::inputItem,
                         ByteBufCodecs.VAR_INT, FusionChamberRecipe::inputCount,
+                        ByteBufCodecs.VAR_INT, FusionChamberRecipe::energyCost,
                         ItemStack.STREAM_CODEC, FusionChamberRecipe::output,
                         FusionChamberRecipe::new);
 
